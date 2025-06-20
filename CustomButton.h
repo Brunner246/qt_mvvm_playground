@@ -9,7 +9,7 @@
 #include <QString>
 #include <QObject>
 
-class CustomButton : public QPushButton {
+class CustomButton final : public QPushButton {
     Q_OBJECT
 
 public:

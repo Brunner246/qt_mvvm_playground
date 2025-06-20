@@ -4,7 +4,20 @@
 
 #include "UserModel.h"
 #include "UserViewModel.h"
-#include <compare> // für C++20
+#include <compare>
+#include <QApplication>
+#include <QMainWindow>
+#include <QVBoxLayout>
+#include <QWidget>
+#include <QTimer>
+#include "CustomButton.h"
+#include "CustomButtonViewModel.h"
+
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <cctype>
+#include <ranges>
 
 class Integer {
 private:
@@ -12,6 +25,10 @@ private:
 
 public:
     explicit Integer(const int v) : value(v) {
+    }
+
+    operator int() const {
+        return value;
     }
 
     auto operator<=>(const Integer &other) const = default;
@@ -28,6 +45,25 @@ void onCallback(int a, int b, operation cb) {
     qDebug() << result;
 }
 
+template<typename T, typename Func>
+auto operator|(T &&value, Func &&func) -> decltype(func(std::forward<T>(value))) {
+    return func(std::forward<T>(value));
+}
+
+std::string toUpper(const std::string &str) {
+    std::string result = str;
+    auto resultView = str | std::views::transform([](const char c) { return std::toupper(c);});
+    result.resize(resultView.size());
+    std::ranges::copy(resultView, result.begin());
+    // std::ranges::transform(result, result.begin(),
+    //                        [](const unsigned char c) { return std::toupper(c); });
+    return result;
+}
+
+std::string addExclamation(const std::string &str) {
+    return str + "!";
+}
+
 
 int main(int argc, char *argv[]) {
     const auto op1 = [](const int a, const int b) {
@@ -37,8 +73,14 @@ int main(int argc, char *argv[]) {
     const auto l1 = Integer(1);
     const auto l2 = Integer(2);
 
+    qDebug() << "Stack variable " << &l1 << "and" << &l2;
     l1 == l2 ? qDebug() << "l1 is equal to l2" : qDebug() << "l1 is not equal to l2";
 
+    using namespace std::literals::string_literals;
+    std::string result2 = "hello"s
+                          | toUpper
+                          | addExclamation;
+    qDebug() << "Transformed string:" << QString::fromStdString(result2);
 
     // int (*operation)(int, int);
 
@@ -53,30 +95,71 @@ int main(int argc, char *argv[]) {
     });
 
     std::string efficient;
-    efficient.reserve(10000); // Vorallokation einer angemessenen Größe
+    efficient.reserve(10000);
     for (int i = 0; i < 1000; i++) {
         efficient += std::to_string(i);
     }
 
 
-    QApplication a(argc, argv);
-    QPushButton button("Hello world!", nullptr);
-    auto userModel = UserModel("Hans", "angmei@gmal.com");
-    const auto userViewModel = new UserViewModel(&userModel);
-    QObject::connect(&button, &QAbstractButton::clicked, []() {
-        qDebug() << "Hello world!";
-    });
-    QObject::connect(&button, &QAbstractButton::clicked, userViewModel, [userViewModel] {
-        // create a random UUID
-        const auto uuid = QUuid::createUuid();
+    QApplication app(argc, argv);
 
-        userViewModel->setEmail(QString("newMail_%1@gmail.com").arg(uuid.toString(QUuid::WithoutBraces)));
-    });
-    QObject::connect(userViewModel, &UserViewModel::emailChanged, [](const QString &email) {
-        qInfo() << "Email changed to:" << email;
+    QMainWindow mainWindow;
+    mainWindow.setWindowTitle("CustomButton Example");
+    mainWindow.resize(300, 200);
+
+    const auto centralWidget = new QWidget(&mainWindow);
+    const auto layout = new QVBoxLayout(centralWidget);
+    layout->setAlignment(Qt::AlignCenter);
+    mainWindow.setCentralWidget(centralWidget);
+
+    const auto button = new CustomButton("Click me", centralWidget);
+    layout->addWidget(button);
+
+    const auto viewModel = new CustomButtonViewModel();
+    qDebug() << CustomButtonViewModel::CallbackType::OnStyleChanged;
+
+    QObject::connect(button, &QPushButton::clicked, [viewModel]() {
+        viewModel->onClicked();
     });
 
-    button.resize(200, 100);
-    button.show();
+    viewModel->registerCallback(CustomButtonViewModel::OnTextChanged, [button](const QString &text) {
+        button->setText(text);
+    });
+    viewModel->registerCallback(CustomButtonViewModel::OnStyleChanged, [button](const QString &style) {
+        button->setStyleSheet(style);
+    });
+    viewModel->registerCallback(CustomButtonViewModel::OnLogging, [](const QString &message) {
+        qDebug() << "Log:" << message;
+    });
+
+    const auto styleTimer = new QTimer(centralWidget);
+    styleTimer->setInterval(3000);
+
+    QObject::connect(styleTimer, &QTimer::timeout, [toggle = false, viewModel]() mutable {
+        const QString altStyle = "QPushButton {"
+                "    background-color: #e84a86;"
+                "    color: white;"
+                "    border-radius: 6px;"
+                "    padding: 8px 16px;"
+                "    font-size: 14px;"
+                "    font-weight: bold;"
+                "}"
+                "QPushButton:hover {"
+                "    background-color: #d83a76;"
+                "}"
+                "QPushButton:pressed {"
+                "    background-color: #c82a66;"
+                "}";
+
+        const auto style = toggle ? CustomButton::defaultStyle() : altStyle;
+        toggle = !toggle;
+        qDebug() << "Changing style to:" << toggle;
+        viewModel->setStyle(style);
+    });
+
+    styleTimer->start();
+    viewModel->setText("Initial Text");
+
+    mainWindow.show();
     return QApplication::exec();
 }

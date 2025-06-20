@@ -7,23 +7,37 @@
 
 #include <QString>
 #include <functional>
+#include <qobjectdefs.h>
+#include <QLoggingCategory>
+
+Q_DECLARE_LOGGING_CATEGORY(someCategory)
 
 class CustomButtonViewModel {
+    Q_GADGET
+
+
 public:
+    enum CallbackType {
+        OnTextChanged,
+        OnStyleChanged,
+        OnLogging
+    };
+
+    Q_ENUM(CallbackType)
+
     CustomButtonViewModel() = default;
+
     ~CustomButtonViewModel() = default;
 
     // callbacks
-    using TextChangedCallback = std::function<void(const QString&)>;
-    using StyleChangedCallback = std::function<void(const QString&)>;
+    using _callback = std::function<void(const QString &)>;
 
-    void setTextChangedCallback(TextChangedCallback callback);
-    void setStyleChangedCallback(StyleChangedCallback callback);
-
+    void registerCallback(CallbackType type, std::function<void(const QString &)> callback);
 
 #pragma region update-model-notify-observers
-    void setText(const QString& text);
-    void setStyle(const QString& style);
+    void setText(const QString &text);
+
+    void setStyle(const QString &style);
 #pragma endregion update-model-notify-observers
 
 #pragma region event-handlers
@@ -34,10 +48,8 @@ private:
     QString m_text;
     QString m_style;
 
-    TextChangedCallback m_textChangedCallback;
-    StyleChangedCallback m_styleChangedCallback;
-
     int m_clickCount = 0;
+    std::unordered_map<CallbackType, _callback> m_callbacks;
 };
 
 #endif // CUSTOMBUTTONVIEWMODEL_H

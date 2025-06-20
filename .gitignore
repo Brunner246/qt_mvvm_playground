@@ -1,0 +1,66 @@
+# C++ build artifacts
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+*.lib
+*.a
+*.la
+*.lo
+*.slo
+
+# Qt-specific
+*.moc
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+*.qm
+.qmake.stash
+Makefile*
+*build-*
+*.pro.user*
+*.qbs.user*
+*.qmlproject.user*
+
+# CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+_deps/
+build/
+cmake-build*/
+
+# CLion specific
+.idea/
+*.iml
+.cache/
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.swp
+*.suo
+*.user
+*.userosscache
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+
+# Debugging files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+bin/
+lib/
+out/
