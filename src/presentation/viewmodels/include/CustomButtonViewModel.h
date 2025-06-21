@@ -9,11 +9,21 @@
 #include <functional>
 #include <qobjectdefs.h>
 #include <QLoggingCategory>
+#include <QObject>
+#include <unordered_map>
+#include <viewmodels_export.h>
+#include <QtCore/QMetaType>
+
+#include <api_export.h>
+
+
 
 Q_DECLARE_LOGGING_CATEGORY(someCategory)
 
-class CustomButtonViewModel {
+class VM_API CustomButtonViewModel final /*: public QObject*/ {
     Q_GADGET
+    // Q_GADGET does not work with VIEWMODELS_EXPORT in msvc
+    // Q_GADGET_EXPORT(VIEWMODELS_EXPORT)
 
 
 public:

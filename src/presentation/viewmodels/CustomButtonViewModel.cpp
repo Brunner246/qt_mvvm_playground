@@ -2,7 +2,7 @@
 // Created by brunn on 20/06/2025.
 //
 
-#include "CustomButtonViewModel.h"
+#include "include/CustomButtonViewModel.h"
 #include <QDebug>
 #include <utility>
 

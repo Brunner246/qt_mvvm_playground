@@ -1,0 +1,51 @@
+name: Windows CMake Build (Qt Only)
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4.3.0
+        with:
+          version: '6.8.0'
+          arch: win64_msvc2019_64  #  win64_msvc2022_64
+          setup-python: false
+          modules: 'qtcore qtgui qtwidgets'
+
+      - name: Set up vcpkg
+        uses: johnwason/vcpkg-action@v7.0.1
+        with:
+          manifest-dir: ${{ github.workspace }}
+          triplet: x64-windows-release
+          token: ${{ github.token }}
+
+      - name: Configure CMake
+        run: >
+          cmake -B cmake-build-release
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+          -DVCPKG_TARGET_TRIPLET=x64-windows-release
+        env:
+          CMAKE_PREFIX_PATH: ${{ env.Qt6_DIR }}
+
+      - name: Build
+        run: cmake --build cmake-build-release --config Release
+
+      - name: List contents of output directory
+        run: dir /s /b ${{ github.workspace }}\output\bin\release
+
+#      - name: Run tests
+#        continue-on-error: true
+#        run: |
+#          cd cmake-build-release
+#          ctest -C Release --output-on-failure
