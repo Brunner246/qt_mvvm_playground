@@ -19,6 +19,50 @@
 #include <cctype>
 #include <ranges>
 
+class InterfaceA {
+public:
+    virtual ~InterfaceA() = default;
+
+    virtual void doSomething() = 0;
+};
+
+class InterfaceB {
+public:
+    virtual ~InterfaceB() = default;
+
+    virtual void doSomethingElse() = 0;
+};
+
+void doAStuff(InterfaceA *a) {
+    if (a) {
+        a->doSomething();
+    } else {
+        qDebug() << "InterfaceA is null";
+    }
+}
+
+void doBStuff(InterfaceB *b) {
+    if (b) {
+        b->doSomethingElse();
+    } else {
+        qDebug() << "InterfaceB is null";
+    }
+}
+
+class Impl : public InterfaceA, public InterfaceB {
+public:
+    ~Impl() override = default;
+
+    void doSomething() override {
+        qDebug() << "Doing something in Impl";
+    }
+
+    void doSomethingElse() override {
+        qDebug() << "Doing something else";
+    }
+};
+
+
 class Integer {
 private:
     int value;
@@ -52,7 +96,7 @@ auto operator|(T &&value, Func &&func) -> decltype(func(std::forward<T>(value)))
 
 std::string toUpper(const std::string &str) {
     std::string result = str;
-    auto resultView = str | std::views::transform([](const char c) { return std::toupper(c);});
+    auto resultView = str | std::views::transform([](const char c) { return std::toupper(c); });
     result.resize(resultView.size());
     std::ranges::copy(resultView, result.begin());
     // std::ranges::transform(result, result.begin(),
@@ -66,6 +110,11 @@ std::string addExclamation(const std::string &str) {
 
 
 int main(int argc, char *argv[]) {
+    const auto impl = std::make_unique<Impl>();
+    doAStuff(impl.get());
+    doBStuff(impl.get());
+
+
     const auto op1 = [](const int a, const int b) {
         return a + b;
     };
