@@ -1,9 +1,11 @@
 project(interfaces)
-add_library(${PROJECT_NAME} INTERFACE)
+add_library(${PROJECT_NAME} INTERFACE
+        include/IPostService.h)
 target_include_directories(${PROJECT_NAME}
         INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../domain/model/include>
 )
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_23)
 

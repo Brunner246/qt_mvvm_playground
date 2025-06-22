@@ -3,12 +3,28 @@
 //
 
 #include "UserViewModel.h"
-#include "UserModel.h"
 #include <QDebug>
 
-UserViewModel::UserViewModel(UserModel* model, QObject* parent)
-    : QObject(parent), m_model(model), m_isValid(false) {
+#include <qstring.h>
 
+#include <utility>
+
+struct UserModel {
+    QString name;
+    QString email;
+
+    explicit UserModel(QString name = "", QString email = "")
+        : name(std::move(name)), email(std::move(email)) {
+    }
+
+    [[nodiscard]] bool isValid() const {
+        return !name.isEmpty() && !email.isEmpty();
+    }
+};
+
+
+UserViewModel::UserViewModel(UserModel *model, QObject *parent)
+    : QObject(parent), m_model(model), m_isValid(false) {
     if (m_model) {
         m_name = m_model->name;
         m_email = m_model->email;

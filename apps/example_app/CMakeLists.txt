@@ -1,68 +1,62 @@
-project(viewmodels)
+project(app)
 
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_CXX_VISIBILITY_PRESET hidden)
-set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
-
-include(GenerateExportHeader)
-include(GNUInstallDirs)
-
-option(BUILD_SHARED_LIBS "Build shared libraries" ON)
-
-add_library(${PROJECT_NAME})
-
-generate_export_header(${PROJECT_NAME}
-        BASE_NAME ${PROJECT_NAME}
-        EXPORT_MACRO_NAME VM_API
-        EXPORT_FILE_NAME "${CMAKE_CURRENT_BINARY_DIR}/viewmodels_export.h"
-        STATIC_DEFINE ${PROJECT_NAME}_BUILT_AS_STATIC
-)
-
-target_include_directories(${PROJECT_NAME}
-        PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-        $<INSTALL_INTERFACE:include>
-)
-
-message("CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
-message("CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
+add_executable(${PROJECT_NAME})
 
 find_package(Qt6 COMPONENTS
         Core
+        Gui
+        Widgets
         REQUIRED)
-
 qt_standard_project_setup()
 
 target_sources(${PROJECT_NAME}
         PRIVATE
-        CustomButtonViewModel.cpp
-        UserViewModel.h
-        UserViewModel.cpp
-        PostViewModel.cpp
-
-        PUBLIC
-        FILE_SET HEADERS BASE_DIRS include
-        FILES
-        include/CustomButtonViewModel.h
-        include/PostViewModel.h
+        main.cpp
 )
+
+target_include_directories(${PROJECT_NAME}
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../src/presentation/viewmodels/include>
+        $<INSTALL_INTERFACE:include>
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+
+#target_include_directories(${PROJECT_NAME}
+#        PUBLIC
+#        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../include>
+#        $<INSTALL_INTERFACE:include>
+#        PRIVATE
+#        ${CMAKE_CURRENT_SOURCE_DIR}/src
+#)
+
+#qt_add_resources(helloworld imageresources
+#        PREFIX "/images"
+#        FILES logo.png splashscreen.png
+#)
 
 target_link_libraries(${PROJECT_NAME}
         Qt::Core
+        Qt::Gui
+        Qt::Widgets
+        MVVM::ViewModels
+        MVVM::Network
+        MVVM::interfaces
         MVVM::UC
         MVVM::Model
 )
 
-add_library(MVVM::ViewModels ALIAS ${PROJECT_NAME})
+# add_library(MVVM::App ALIAS ${PROJECT_NAME})
 
 if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(DEBUG_SUFFIX)
     if (MSVC AND CMAKE_BUILD_TYPE MATCHES "Debug")
         set(DEBUG_SUFFIX "d")
     endif ()
+    # set(QT_INSTALL_PATH "${CMAKE_PREFIX_PATH}")
+    # message(STATUS "QT_INSTALL_PATH: ${QT_INSTALL_PATH}")
+    # set(QT_LIB_CMAKE_PATH "C:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6")
     get_filename_component(QT_INSTALL_PATH "${CMAKE_PREFIX_PATH}/../../../bin" ABSOLUTE)
     message(STATUS "Qt binary path: ${QT_BIN_PATH}")
     if (NOT EXISTS "${QT_INSTALL_PATH}/bin")
@@ -80,7 +74,7 @@ if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
                 "${QT_INSTALL_PATH}/plugins/platforms/qwindows${DEBUG_SUFFIX}.dll"
                 "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/platforms/")
     endif ()
-    foreach (QT_LIB Core)
+    foreach (QT_LIB Core Gui Widgets)
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy
                 "${QT_INSTALL_PATH}/bin/Qt6${QT_LIB}${DEBUG_SUFFIX}.dll"

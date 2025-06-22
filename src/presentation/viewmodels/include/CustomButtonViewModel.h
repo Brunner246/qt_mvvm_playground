@@ -12,10 +12,6 @@
 #include <QObject>
 #include <unordered_map>
 #include <viewmodels_export.h>
-#include <QtCore/QMetaType>
-
-#include <api_export.h>
-
 
 
 Q_DECLARE_LOGGING_CATEGORY(someCategory)
