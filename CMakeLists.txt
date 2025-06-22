@@ -32,3 +32,4 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/rel
 add_subdirectory(src/app/interfaces)
 add_subdirectory(src/presentation/viewmodels)
 add_subdirectory(src/app)
+add_subdirectory(src/ui)
