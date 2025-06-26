@@ -19,8 +19,8 @@ QtPostService::QtPostService(QObject *parent)
 }
 
 void QtPostService::fetchPost(const int id,
-                              const std::function<void(Post)> onSuccess,
-                              const std::function<void(std::string)> onError) {
+                              std::function<void(Post)> const &onSuccess,
+                              std::function<void(std::string)> const &onError) {
     m_onSuccess = onSuccess;
     m_onError = onError;
 

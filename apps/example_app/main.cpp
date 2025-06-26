@@ -20,6 +20,8 @@
 #include <QtPostService.h>
 #include <TestClass.h>
 
+#include "CprPostService.h"
+
 class InterfaceA {
 public:
     virtual ~InterfaceA() = default;
@@ -161,78 +163,9 @@ int main(int argc, char *argv[]) {
     });
     testClass->doSomething();
 
-    // const auto postService = new QtPostService();
-    // const auto postUseCase = new FetchPostUseCase(postService);
-    // const auto postViewModel = new PostViewModel(postUseCase);
-    // postViewModel->fetchPost(2);
-    // qDebug() << "Post title:" << postViewModel->title();
-    // qDebug() << "Post body:" << postViewModel->body();
-
-    // QMainWindow mainWindow;
-    // mainWindow.setWindowTitle("CustomButton Example");
-    // mainWindow.resize(300, 200);
-    //
-    // const auto centralWidget = new QWidget(&mainWindow);
-    // const auto layout = new QVBoxLayout(centralWidget);
-    // layout->setAlignment(Qt::AlignCenter);
-    // mainWindow.setCentralWidget(centralWidget);
-    //
-    // const auto button = new CustomButton("Click me", centralWidget);
-    // layout->addWidget(button);
-    //
-    // const auto viewModel = new CustomButtonViewModel();
-    // qDebug() << CustomButtonViewModel::CallbackType::OnStyleChanged;
-    //
-    // QObject::connect(button, &QPushButton::clicked, [viewModel]() {
-    //     viewModel->onClicked();
-    // });
-    //
-    // viewModel->registerCallback(CustomButtonViewModel::OnTextChanged, [button](const QString &text) {
-    //     button->setText(text);
-    // });
-    // viewModel->registerCallback(CustomButtonViewModel::OnStyleChanged, [button](const QString &style) {
-    //     button->setStyleSheet(style);
-    // });
-    // viewModel->registerCallback(CustomButtonViewModel::OnLogging, [](const QString &message) {
-    //     qDebug() << "Log:" << message;
-    // });
-    //
-    // const auto styleTimer = new QTimer(centralWidget);
-    // styleTimer->setInterval(3000);
-    //
-    // QObject::connect(styleTimer, &QTimer::timeout, [toggle = false, viewModel]() mutable {
-    //     const QString altStyle = "QPushButton {"
-    //             "    background-color: #e84a86;"
-    //             "    color: white;"
-    //             "    border-radius: 6px;"
-    //             "    padding: 8px 16px;"
-    //             "    font-size: 14px;"
-    //             "    font-weight: bold;"
-    //             "}"
-    //             "QPushButton:hover {"
-    //             "    background-color: #d83a76;"
-    //             "}"
-    //             "QPushButton:pressed {"
-    //             "    background-color: #c82a66;"
-    //             "}";
-    //
-    //     const auto style = toggle ? CustomButton::defaultStyle() : altStyle;
-    //     toggle = !toggle;
-    //     qDebug() << "Changing style to:" << toggle;
-    //     viewModel->setStyle(style);
-    // });
-    //
-    // styleTimer->start();
-    // viewModel->setText("Initial Text");
-    //
-    // mainWindow.show();
-    // return QApplication::exec();
-
-    // return EXIT_SUCCESS;
-
     QCoreApplication app(argc, argv);
 
-    auto* service = new QtPostService();
+    auto* service = new CprPostService();
     auto* useCase = new FetchPostUseCase(service);
     auto* viewModel = new PostViewModel(useCase);
 

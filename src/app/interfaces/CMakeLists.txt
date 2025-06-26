@@ -11,7 +11,7 @@ target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_23)
 
 target_compile_options(${PROJECT_NAME}
         INTERFACE
-        $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+        $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX /wd4251>
         $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
 )
 

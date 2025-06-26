@@ -18,8 +18,8 @@ public:
     explicit QtPostService(QObject *parent = nullptr);
 
     void fetchPost(int id,
-                   std::function<void(Post)> onSuccess,
-                   std::function<void(std::string)> onError) override;
+                   std::function<void(Post)> const &onSuccess,
+                   std::function<void(std::string)> const &onError) override;
 
 private slots:
     void handleReply(QNetworkReply *reply) const;

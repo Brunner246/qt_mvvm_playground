@@ -35,6 +35,7 @@ find_package(Qt6
         Network
         Core
 )
+find_package(cpr REQUIRED)
 
 qt_standard_project_setup()
 
@@ -57,6 +58,7 @@ target_link_libraries(${PROJECT_NAME}
         Qt6::Core
         MVVM::interfaces
         MVVM::Model # weakened layers.. down to core/model
+        cpr::cpr
 )
 
 

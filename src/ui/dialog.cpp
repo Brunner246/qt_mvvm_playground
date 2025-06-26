@@ -17,6 +17,10 @@ Dialog::Dialog(CustomButtonViewModel *viewModel, QWidget *parent)
         throw std::runtime_error("ViewModel cannot be null");
     }
     ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::clicked, this, [this]() {)
+        m_viewModel->onClicked();
+    });
 }
 
 Dialog::~Dialog() {
