@@ -6,6 +6,7 @@
 #define DIALOG_H
 
 #include <QMainWindow>
+#include <user_interface_export.h>
 
 
 class CustomButtonViewModel;
@@ -14,7 +15,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class Dialog; }
 QT_END_NAMESPACE
 
-class Dialog final : public QMainWindow {
+class UI_API Dialog final : public QMainWindow {
 Q_OBJECT
 
 public:

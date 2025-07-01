@@ -3,7 +3,7 @@ project(qt_mvvm)
 
 set(CMAKE_CXX_STANDARD 23)
 #set(CMAKE_PREFIX_PATH "C:/Qt/6.8.0/msvc2022_64/lib/cmake/Qt6")
-#set(CMAKE_PREFIX_PATH "D:/Qt6-msvc/6.7.0/msvc2019_64/lib/cmake/Qt6")
+# set(CMAKE_PREFIX_PATH "D:/Qt6-msvc/6.7.0/msvc2019_64/lib/cmake/Qt6")
 
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
@@ -15,7 +15,12 @@ else()
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-list(APPEND CMAKE_MODULE_PATH "D:/Qt6-msvc/6.7.0/msvc2019_64/lib/cmake/Qt6")
+#list(APPEND CMAKE_MODULE_PATH "D:/Qt6-msvc/6.7.0/msvc2019_64/lib/cmake/Qt6")
+list(APPEND CMAKE_PREFIX_PATH "D:/Qt6-msvc/6.7.0/msvc2019_64/lib/cmake/Qt6")
+set(ENV{QT_ROOT} "D:/Qt6-msvc/6.7.0/msvc2019_64")
+list(APPEND CMAKE_PREFIX_PATH "$ENV{QT_ROOT}")
+message(STATUS "Set QT_ROOT environment variable to: $ENV{QT_ROOT}")
+
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/out/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/out/lib)

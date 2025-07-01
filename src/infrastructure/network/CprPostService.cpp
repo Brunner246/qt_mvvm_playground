@@ -12,13 +12,11 @@ void CprPostService::fetchPost(const int id,
                                const std::function<void(Post)> &onSuccess,
                                const std::function<void(std::string)> &onError)
 {
-    std::string url = "https://jsonplaceholder.typicode.com/posts/" + std::to_string(id);
+    const std::string url = "https://jsonplaceholder.typicode.com/posts/" + std::to_string(id);
 
-    // Make the GET request using cpr
-    cpr::Response response = cpr::Get(cpr::Url{url});
+    const cpr::Response response = cpr::Get(cpr::Url{url});
 
     if (response.status_code != 200) {
-        // Handle error case
         onError("Error: " + std::to_string(response.status_code) + " - " + response.error.message);
         return;
     }

@@ -21,6 +21,7 @@
 #include <TestClass.h>
 
 #include "CprPostService.h"
+#include "Dialog.h"
 
 class InterfaceA {
 public:
@@ -154,6 +155,8 @@ int main(int argc, char *argv[]) {
         efficient += std::to_string(i);
     }
 
+    QApplication::addLibraryPath("D:\\Qt6-msvc\\6.7.0\\msvc2019_64\\plugins");
+    QApplication app(argc, argv);
 
     //QApplication app(argc, argv);
 
@@ -163,25 +166,36 @@ int main(int argc, char *argv[]) {
     });
     testClass->doSomething();
 
-    QCoreApplication app(argc, argv);
-
-    auto* service = new CprPostService();
-    auto* useCase = new FetchPostUseCase(service);
-    auto* viewModel = new PostViewModel(useCase);
-
-    QObject::connect(viewModel, &PostViewModel::titleChanged, [viewModel]() {
-        std::cout << "Post Title:" << viewModel->title().toStdString();
+    const auto vm = std::make_unique<CustomButtonViewModel>();
+    vm->registerCallback(CustomButtonViewModel::OnTextChanged, [](const QString &text) {
+        qDebug() << "Text changed to:" << text;
     });
 
-    QObject::connect(viewModel, &PostViewModel::bodyChanged, [viewModel]() {
-        std::cout << "Post Body:" << viewModel->body().toStdString();
+    const auto dialog = new Dialog(vm.get());
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->show();
 
-        QCoreApplication::quit();
-    });
+    // QCoreApplication app(argc, argv);
+    //
+    // auto* service = new CprPostService();
+    // auto* useCase = new FetchPostUseCase(service);
+    // auto* viewModel = new PostViewModel(useCase);
+    //
+    // QObject::connect(viewModel, &PostViewModel::titleChanged, [viewModel]() {
+    //     std::cout << "Post Title:" << viewModel->title().toStdString();
+    // });
+    //
+    // QObject::connect(viewModel, &PostViewModel::bodyChanged, [viewModel]() {
+    //     std::cout << "Post Body:" << viewModel->body().toStdString();
+    //
+    //     QCoreApplication::quit();
+    // });
+    //
+    // QTimer::singleShot(0, [viewModel]() {
+    //     viewModel->fetchPost(1);
+    // });
+    //
+    // return QCoreApplication::exec();
 
-    QTimer::singleShot(0, [viewModel]() {
-        viewModel->fetchPost(1);
-    });
-
-    return QCoreApplication::exec();
+    return QApplication::exec();
 }
