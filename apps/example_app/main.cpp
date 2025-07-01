@@ -88,6 +88,14 @@ int add(const int a, const int b) {
 
 using operation = int (*)(int, int);
 
+class Adder
+{
+public:
+    int add(int a, int b) const {
+        return a + b;
+    }
+};
+
 void onCallback(int a, int b, operation cb) {
     const auto result = cb(a, b);
     qDebug() << result;
@@ -148,6 +156,11 @@ int main(int argc, char *argv[]) {
     onCallback(5, 6, [](const int a, const int b) {
         return a % b;
     });
+    // using operation = std::function<int(int, int)>;
+    // const auto adder = Adder();
+    // onCallback(10, 20, [&adder](int a, int b) { return adder.add(a, b); });
+    // onCallback(10, 20, std::bind(&Adder::add, &adder, std::placeholders::_1, std::placeholders::_2));
+
 
     std::string efficient;
     efficient.reserve(10000);
